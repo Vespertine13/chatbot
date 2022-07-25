@@ -1,0 +1,60 @@
+# load data
+score_matrix <<- read.csv("data/chatbot_matrix.csv")[-1] %>% as.matrix() %>% unname()
+phrases <<- read.csv("data/chatbot_phrases.csv")[-1] %>% unlist() %>% as.character()
+
+# reset
+# phrases <<- c("talk to me!", "yes", "no")
+# score_matrix <<- matrix(1, 3, 3)
+
+# test data
+if(length(phrases) == nrow(score_matrix)){print("Phrases and matrix match!")}
+
+# rows refers to input
+# columns refer to output
+add_new_input <- function(char){
+    score_matrix <<- rbind(score_matrix, 1)
+    score_matrix <<- cbind(score_matrix, 1)
+    phrases <<- c(phrases, char)}
+
+# auto feedback
+auto_feedback <- function(input, output){
+    score <- sample(c(1, 10, 100), 1)
+    # add to response
+    score_matrix[phrases == output, phrases == input] <<- score_matrix[phrases == output, phrases == input] + score
+    # penalize random unused response
+    select_penalty <- sample(1:ncol(score_matrix), 1)
+    score_matrix[phrases == output, select_penalty] <<- score_matrix[phrases == output, select_penalty] - score
+}
+
+# weighted selection hope it works :)))
+# selects a responce from the matrix
+simple_select <- function(input){   
+    score <- score_matrix[phrases == input, ]
+    score[score<0] <- 0
+    sample_lst <- c()
+    for(i in 1:length(score)){
+        sample_lst <- c(sample_lst, rep(phrases[i],score[i]))
+    }
+    return(sample(sample_lst, 1))
+}
+
+# chatbot function
+run_chatbot <- function(){
+    input <- "none"
+    output <- "talk to me!"
+    print(output)
+    while(!grepl("bye", input)){
+        input <- readline(prompt = "Write something: ")
+        input <- tolower(input)
+        if(!(input %in% phrases)){add_new_input(input)}
+        auto_feedback(input, output)
+        output <- simple_select(input)
+        print(output)
+    }
+    print("Chatbot left")
+}
+
+run_chatbot()
+# save data
+write.csv(score_matrix, "data/chatbot_matrix.csv")
+write.csv(phrases, "data/chatbot_phrases.csv")
