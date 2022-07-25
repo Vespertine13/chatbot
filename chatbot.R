@@ -3,7 +3,11 @@
 # score_matrix <<- matrix(1, 3, 3)
 
 # test data
-run_tests <- function(){if(length(phrases) == nrow(score_matrix)){print("Phrases and matrix match!")}}
+run_tests <- function(){
+    if(length(phrases) == nrow(score_matrix)){print("Phrases and matrix match in rows!")}
+    if(length(phrases) == ncol(score_matrix)){print("Phrases and matrix match in columns!")
+    print(mean(score_matrix))}
+}
 
 # rows refers to input
 # columns refer to output
