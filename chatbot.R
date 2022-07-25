@@ -25,7 +25,7 @@ add_new_input <- function(char){
 
 # auto feedback
 auto_feedback <- function(input, output){
-    score <- sample(c(1, 10, 100), 1)
+    score <- sample(c(1, 10, 100, 1000), 1)
     # add to response
     score_matrix[phrases == output, phrases == input] <<- score_matrix[phrases == output, phrases == input] + score
     # penalize random unused response
