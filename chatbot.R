@@ -36,7 +36,7 @@ auto_feedback <- function(input, output){
 # creates a new phrase
 new_phrase <- function(){
     return(paste(sample(unique(unlist(strsplit(
-        phrases, split=" "))), sample(1:3, 1)), collapse=" "))
+        phrases, split=" "))), sample(1:10, 1)), collapse=" "))
 }
 
 
