@@ -73,7 +73,7 @@ run_chatbot <- function(){
         input <- tolower(input)
         if(!(input %in% phrases)){add_new_input(input)}
         auto_feedback(input, output)
-        if(sample(c(T, F, F, F, F), 1)){output <- simple_select(input)}
+        if(sample(c(T, rep(F, 9)), 1)){output <- simple_select(input)}
         else if(sum(score_matrix[phrases == input, ]>1)>0){output <- advance_select(input)}
         else{output <- simple_select(input)}
         print(output)
