@@ -4,11 +4,12 @@
 
 # test data
 run_tests <- function(){
-    print("mean score:"
+    print("mean score:")
     print(mean(score_matrix))
     print("nrow score_matrix:")
     print(nrow(score_matrix))
     print("ncol score_matrix")
+    print(ncol(score_matrix))
     print("Number of phrases:")
     print(length(phrases))
 }
