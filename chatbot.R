@@ -33,6 +33,12 @@ auto_feedback <- function(input, output){
     score_matrix[phrases == output, select_penalty] <<- score_matrix[phrases == output, select_penalty] - score
 }
 
+# creates a new phrase
+new_phrase <- function(){
+    return(paste(sample(unique(unlist(strsplit(
+        phrases, split=" "))), sample(1:3, 1)), collapse=" "))
+}
+
 
 # selects a responce from the matrix
 # select from all over 0
@@ -71,10 +77,24 @@ run_chatbot <- function(){
     while(!grepl("bye", input)){
         input <- readline(prompt = "Write something: ")
         input <- tolower(input)
+
+        # adds the word if it isn't already in phrases
         if(!(input %in% phrases)){add_new_input(input)}
         auto_feedback(input, output)
-        if(sample(c(T, rep(F, 9)), 1)){output <- simple_select(input)}
+
+        # very rarely adds a new random phrase
+        if(sample(c(T, rep(F, 99)), 1)){
+            output <- new_phrase()
+            add_new_input(output)
+        }
+
+        # selects from all phrases over value 0
+        else if(sample(c(T, rep(F, 9)), 1)){output <- simple_select(input)}
+
+        # selects from all phrases over value 1
         else if(sum(score_matrix[phrases == input, ]>1)>0){output <- advance_select(input)}
+
+        # selects from all phrases over value 0
         else{output <- simple_select(input)}
         print(output)
     }
