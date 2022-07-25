@@ -1,13 +1,9 @@
-# load data
-score_matrix <<- unname(as.matrix(read.csv("data/chatbot_matrix.csv")[-1]))
-phrases <<- as.character(unlist(read.csv("data/chatbot_phrases.csv")[-1]))
-
 # reset
 # phrases <<- c("talk to me!", "yes", "no")
 # score_matrix <<- matrix(1, 3, 3)
 
 # test data
-if(length(phrases) == nrow(score_matrix)){print("Phrases and matrix match!")}
+run_tests <- function(){if(length(phrases) == nrow(score_matrix)){print("Phrases and matrix match!")}}
 
 # rows refers to input
 # columns refer to output
@@ -40,6 +36,10 @@ simple_select <- function(input){
 
 # chatbot function
 run_chatbot <- function(){
+    # load data 
+    score_matrix <<- unname(as.matrix(read.csv("data/chatbot_matrix.csv")[-1]))
+    phrases <<- as.character(unlist(read.csv("data/chatbot_phrases.csv")[-1]))
+    # set start input and output values
     input <- "none"
     output <- "talk to me!"
     print(output)
@@ -52,9 +52,10 @@ run_chatbot <- function(){
         print(output)
     }
     print("Chatbot left")
+    # save data
+    write.csv(score_matrix, "data/chatbot_matrix.csv")
+    write.csv(phrases, "data/chatbot_phrases.csv")
 }
 
-run_chatbot()
-# save data
-write.csv(score_matrix, "data/chatbot_matrix.csv")
-write.csv(phrases, "data/chatbot_phrases.csv")
+#run_chatbot()
+
