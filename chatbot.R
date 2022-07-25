@@ -33,8 +33,9 @@ auto_feedback <- function(input, output){
     score_matrix[phrases == output, select_penalty] <<- score_matrix[phrases == output, select_penalty] - score
 }
 
-# weighted selection hope it works :)))
+
 # selects a responce from the matrix
+# select from all over 0
 simple_select <- function(input){   
     score <- score_matrix[phrases == input, ]
     score[score<0] <- 0
@@ -44,6 +45,19 @@ simple_select <- function(input){
     }
     return(sample(sample_lst, 1))
 }
+
+# select from all over 1
+advance_select <- function(input){
+    score <- score_matrix[phrases == input, ]
+    score[score<2] <- 0
+    sample_lst <- c()
+    for(i in 1:length(score)){
+        sample_lst <- c(sample_lst, rep(phrases[i],score[i]))
+    }
+    return(sample(sample_lst, 1))
+}
+
+
 
 # chatbot function
 run_chatbot <- function(){
@@ -59,7 +73,9 @@ run_chatbot <- function(){
         input <- tolower(input)
         if(!(input %in% phrases)){add_new_input(input)}
         auto_feedback(input, output)
-        output <- simple_select(input)
+        if(sample(c(T, F, F, F, F), 1)){output <- simple_select(input)}
+        else if(sum(score_matrix[phrases == input, ]>1)>0){output <- advance_select(input)}
+        else{output <- simple_select(input)}
         print(output)
     }
     print("Chatbot left")
@@ -69,4 +85,3 @@ run_chatbot <- function(){
 }
 
 #run_chatbot()
-
