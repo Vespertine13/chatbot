@@ -12,7 +12,7 @@ run_tests <- function(){
     print(ncol(score_matrix))
     print("Number of phrases:")
     print(length(phrases))
-    print("score table")
+    print("score_matrix table:")
     print(table(as.vector(score_matrix)))
 }
 
