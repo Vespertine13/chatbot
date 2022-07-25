@@ -1,6 +1,6 @@
 # load data
-score_matrix <<- read.csv("data/chatbot_matrix.csv")[-1] %>% as.matrix() %>% unname()
-phrases <<- read.csv("data/chatbot_phrases.csv")[-1] %>% unlist() %>% as.character()
+score_matrix <<- unname(as.matrix(read.csv("data/chatbot_matrix.csv")[-1]))
+phrases <<- as.character(unlist(read.csv("data/chatbot_phrases.csv")[-1]))
 
 # reset
 # phrases <<- c("talk to me!", "yes", "no")
