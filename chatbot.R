@@ -4,9 +4,13 @@
 
 # test data
 run_tests <- function(){
-    if(length(phrases) == nrow(score_matrix)){print("Phrases and matrix match in rows!")}
-    if(length(phrases) == ncol(score_matrix)){print("Phrases and matrix match in columns!")
-    print(mean(score_matrix))}
+    print("mean score:"
+    print(mean(score_matrix))
+    print("nrow score_matrix:")
+    print(nrow(score_matrix))
+    print("ncol score_matrix")
+    print("Number of phrases:")
+    print(length(phrases))
 }
 
 # rows refers to input
