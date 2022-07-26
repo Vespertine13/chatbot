@@ -16,6 +16,12 @@ run_stats <- function(){
     print(table(as.vector(score_matrix)))
 }
 
+# plot score distribution
+plot_score_matrix <- function(){
+    options(scipen=999)
+    plot(table(as.vector(score_matrix)), ylab="Occurences", xlab="Score")
+}
+
 # rows refers to input
 # columns refer to output
 add_new_input <- function(char){
@@ -105,4 +111,3 @@ run_chatbot <- function(){
 }
 
 #run_chatbot()
-
