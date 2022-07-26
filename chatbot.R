@@ -3,7 +3,7 @@
 # score_matrix <<- matrix(1, 3, 3)
 
 # test data
-run_stat <- function(){
+run_stats <- function(){
     print("mean score:")
     print(mean(score_matrix))
     print("nrow score_matrix:")
@@ -105,3 +105,4 @@ run_chatbot <- function(){
 }
 
 #run_chatbot()
+
