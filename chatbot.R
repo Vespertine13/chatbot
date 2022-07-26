@@ -14,6 +14,10 @@ run_stats <- function(){
     print(length(phrases))
     print("score_matrix table:")
     print(table(as.vector(score_matrix)))
+    print("score_matrix size:")
+    print(object.size(score_matrix), units = "auto")
+    print("phrases size:")
+    print(object.size(phrases), units = "auto")
 }
 
 # plot score distribution
@@ -21,6 +25,8 @@ plot_score_matrix <- function(){
     options(scipen=999)
     plot(table(as.vector(score_matrix)), ylab="Occurences", xlab="Score")
 }
+
+# 
 
 # rows refers to input
 # columns refer to output
