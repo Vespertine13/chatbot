@@ -35,14 +35,10 @@ add_new_input <- function(char){
     score_matrix <<- cbind(score_matrix, 1)
     phrases <<- c(phrases, char)}
 
-# auto feedback
-auto_feedback <- function(input, output){
-    score <- sample(c(1, 10, 100, 1000), 1)
-    # add to response
-    score_matrix[phrases == output, phrases == input] <<- score_matrix[phrases == output, phrases == input] + score
-    # penalize random unused response
-    select_penalty <- sample(1:ncol(score_matrix), 1)
-    score_matrix[phrases == output, select_penalty] <<- score_matrix[phrases == output, select_penalty] - score
+# give feedback
+give_feedback <- function(input, output){
+    # add +1 to the response written by the user
+    score_matrix[phrases == output, phrases == input] <<- score_matrix[phrases == output, phrases == input] + 1
 }
 
 # creates a new phrase
@@ -54,7 +50,7 @@ new_phrase <- function(){
 
 # selects a responce from the matrix
 # select from all over 0
-simple_select <- function(input){   
+select_from_all <- function(input){   
     score <- score_matrix[phrases == input, ]
     score[score<0] <- 0
     sample_lst <- c()
@@ -92,7 +88,7 @@ run_chatbot <- function(){
 
         # adds the word if it isn't already in phrases
         if(!(input %in% phrases)){add_new_input(input)}
-        auto_feedback(input, output)
+        give_feedback(input, output)
 
         # very rarely adds a new random phrase, 1% chance
         if(sample(c(T, rep(F, 99)), 1)){
@@ -100,14 +96,14 @@ run_chatbot <- function(){
             add_new_input(output)
         }
 
-        # selects from all phrases over value 0, 10% chance
-        else if(sample(c(T, rep(F, 9)), 1)){output <- simple_select(input)}
+        # selects from all phrases over value 0, 1% chance
+        else if(sample(c(T, rep(F, 99)), 1)){output <- select_from_all(input)}
 
         # selects from all phrases over value 1
         else if(sum(score_matrix[phrases == input, ]>1)>0){output <- advance_select(input)}
 
         # selects from all phrases over value 0
-        else{output <- simple_select(input)}
+        else{output <- select_from_all(input)}
         print(output)
     }
     print("Chatbot left")
