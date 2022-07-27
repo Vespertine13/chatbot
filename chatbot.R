@@ -35,6 +35,14 @@ add_new_input <- function(char){
     score_matrix <<- cbind(score_matrix, 1)
     phrases <<- c(phrases, char)}
 
+# delete output
+remove_last_output <- function(char){
+    idx <- which(phrases==char)
+    score_matrix <<- score_matrix[-idx, -idx]
+    phrases <<- phrases[-idx]
+    output <<- ""
+}
+
 # give feedback
 give_feedback <- function(input, output){
     # add +1 to the response written by the user
@@ -72,6 +80,29 @@ advance_select <- function(input){
 }
 
 
+# command mode
+command_mode <- function(){
+    cmd <<- "start"
+    while(cmd != "stop"){
+    cmd <<- readline(prompt = "cmd: ")
+    if(cmd == "0"){print("command mode ended")}
+    else if(cmd == "list codes"){
+        print("0: stop command mode")
+        print("1: list current output")
+        print("2: delete last output")
+        print("3: list current input")
+        print("4: get stats")
+    }
+    else if(cmd == "1"){print(output)}
+    else if(cmd == "2"){remove_last_output(output)
+        print(paste("Removed", output))}
+    else if(cmd == "3"){print(input)}
+    else(print("command unknown"))
+    else if(cmd == "4"){run_stats}
+    }
+}
+
+
 
 # chatbot function
 run_chatbot <- function(){
@@ -79,12 +110,19 @@ run_chatbot <- function(){
     score_matrix <<- unname(as.matrix(read.csv("data/chatbot_matrix.csv")[-1]))
     phrases <<- as.character(unlist(read.csv("data/chatbot_phrases.csv")[-1]))
     # set start input and output values
-    input <- "none"
-    output <- "talk to me!"
+    input <<- "none"
+    output <<- "talk to me!"
     print(output)
     while(!grepl("bye", input)){
         input <- readline(prompt = "Write something: ")
         input <- tolower(input)
+
+        # command mode
+        if(input == "command mode"){
+            command_mode()
+            input <<- readline(prompt = "Write something: ")
+            input <<- tolower(input)
+        }
 
         # adds the word if it isn't already in phrases
         if(!(input %in% phrases)){add_new_input(input)}
@@ -92,18 +130,18 @@ run_chatbot <- function(){
 
         # adds a new random phrase, 1% chance
         if(sample(c(T, rep(F, 99)), 1)){
-            output <- new_phrase()
+            output <<- new_phrase()
             if(!(output %in% phrases)){add_new_input(output)}
         }
 
         # selects from all phrases over value 0, 1% chance
-        else if(sample(c(T, rep(F, 99)), 1)){output <- select_from_all(input)}
+        else if(sample(c(T, rep(F, 99)), 1)){output <<- select_from_all(input)}
 
         # selects from all phrases over value 1
-        else if(sum(score_matrix[phrases == input, ]>1)>0){output <- advance_select(input)}
+        else if(sum(score_matrix[phrases == input, ]>1)>0){output <<- advance_select(input)}
 
         # selects from all phrases over value 0
-        else{output <- select_from_all(input)}
+        else{output <<- select_from_all(input)}
         print(output)
     }
     print("Chatbot left")
