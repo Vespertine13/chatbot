@@ -26,8 +26,6 @@ plot_score_matrix <- function(){
     plot(table(as.vector(score_matrix)), ylab="Occurences", xlab="Score")
 }
 
-# 
-
 # rows refers to input
 # columns refer to output
 add_new_input <- function(char){
@@ -40,7 +38,6 @@ remove_last_output <- function(char){
     idx <- which(phrases==char)
     score_matrix <<- score_matrix[-idx, -idx]
     phrases <<- phrases[-idx]
-    output <<- ""
 }
 
 # give feedback
@@ -83,7 +80,7 @@ advance_select <- function(input){
 # command mode
 command_mode <- function(){
     cmd <<- "start"
-    while(cmd != "stop"){
+    while(cmd != "0"){
     cmd <<- readline(prompt = "cmd: ")
     if(cmd == "0"){print("command mode ended")}
     else if(cmd == "list codes"){
@@ -95,10 +92,12 @@ command_mode <- function(){
     }
     else if(cmd == "1"){print(output)}
     else if(cmd == "2"){remove_last_output(output)
-        print(paste("Removed", output))}
+        print(paste("Removed", output))
+        output <<- ""
+    }
     else if(cmd == "3"){print(input)}
+    else if(cmd == "4"){run_stats()}
     else(print("command unknown"))
-    else if(cmd == "4"){run_stats}
     }
 }
 
