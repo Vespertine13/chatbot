@@ -90,10 +90,10 @@ run_chatbot <- function(){
         if(!(input %in% phrases)){add_new_input(input)}
         give_feedback(input, output)
 
-        # very rarely adds a new random phrase, 1% chance
+        # adds a new random phrase, 1% chance
         if(sample(c(T, rep(F, 99)), 1)){
             output <- new_phrase()
-            add_new_input(output)
+            if(!(output %in% phrases)){add_new_input(output)}
         }
 
         # selects from all phrases over value 0, 1% chance
