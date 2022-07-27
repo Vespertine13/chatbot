@@ -85,18 +85,16 @@ command_mode <- function(){
     if(cmd == "0"){print("command mode ended")}
     else if(cmd == "list codes"){
         print("0: stop command mode")
-        print("1: list current output")
+        print("1: print current output")
         print("2: delete last output")
-        print("3: list current input")
-        print("4: get stats")
+        print("3: get stats")
     }
     else if(cmd == "1"){print(output)}
     else if(cmd == "2"){remove_last_output(output)
         print(paste("Removed", output))
         output <<- ""
     }
-    else if(cmd == "3"){print(input)}
-    else if(cmd == "4"){run_stats()}
+    else if(cmd == "3"){run_stats()}
     else(print("command unknown"))
     }
 }
@@ -113,8 +111,8 @@ run_chatbot <- function(){
     output <<- "talk to me!"
     print(output)
     while(!grepl("bye", input)){
-        input <- readline(prompt = "Write something: ")
-        input <- tolower(input)
+        input <<- readline(prompt = "Write something: ")
+        input <<- tolower(input)
 
         # command mode
         if(input == "command mode"){
