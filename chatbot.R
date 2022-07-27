@@ -93,6 +93,7 @@ command_mode <- function(){
             print("6: check input for likely output")
             print("7: delete specific phrase")
             print("8: print current output")
+            print("9: print 10 newest phrases")
         }
         else if(cmd == "2"){remove_phrase(output)
             print(paste("Removed", output))
@@ -128,6 +129,7 @@ command_mode <- function(){
             else{print("Phrase is not saved")}
         }
         else if(cmd == "8"){print(output)}
+        else if(cmd == "9"){print(tail(phrases, 10))}
         else(print("command unknown"))
     }
 }
