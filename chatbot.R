@@ -81,53 +81,54 @@ advance_select <- function(input){
 command_mode <- function(){
     cmd <<- "start"
     while(cmd != "0"){
-    cmd <<- readline(prompt = "cmd: ")
-    if(cmd == "0"){print("command mode ended")}
-    else if(cmd == "list codes"){
-        print("0: stop command mode")
-        print("1: print current output")
-        print("2: delete last output")
-        print("3: get stats")
-        print("4: check if phrase is saved")
-        print("5: check likely output of input")
-        print("6: check input for likely output")
-        print("7: delete specific phrase")
-    }
-    else if(cmd == "1"){print(output)}
-    else if(cmd == "2"){remove_phrase(output)
-        print(paste("Removed", output))
-        output <<- ""
-    }
-    else if(cmd == "3"){run_stats()}
-    else if(cmd == "4"){check_phrase  <- readline(prompt = "type phrase: ")
-        if(check_phrase %in% phrases){
-            print(paste("Phrase is in position", which(phrases==check_phrase)))
+        cmd <<- readline(prompt = "cmd: ")
+        if(cmd == "0"){print("command mode ended")}
+        else if(cmd == "1"){
+            print("0: stop command mode")
+            print("1: list codes")
+            print("2: delete last output")
+            print("3: get stats")
+            print("4: check if phrase is saved")
+            print("5: check likely output of input")
+            print("6: check input for likely output")
+            print("7: delete specific phrase")
+            print("8: print current output")
         }
-        else{print("Phrase is not saved")}
-    }
-    else if(cmd == "5"){check_phrase  <- readline(prompt = "type phrase: ")
-        if(check_phrase %in% phrases){
-            score_vector <- score_matrix[phrases == check_phrase,]
-            print(phrases[score_vector > 1])
-        }
-        else{print("Phrase is not saved")}
-    }
-    else if(cmd == "6"){check_phrase  <- readline(prompt = "type phrase: ")
-        if(check_phrase %in% phrases){
-            score_vector <- score_matrix[,phrases == check_phrase]
-            print(phrases[score_vector > 1])
-        }
-        else{print("Phrase is not saved")}
-    }
-    else if(cmd == "7"){phrase_to_remove <<- readline(prompt = "type phrase: ")
-        if(phrase_to_remove %in% phrases){
-            remove_phrase(phrase_to_remove)
-            print(paste("Removed", phrase_to_remove))
+        else if(cmd == "2"){remove_phrase(output)
+            print(paste("Removed", output))
             output <<- ""
         }
-        else{print("Phrase is not saved")}
-    }
-    else(print("command unknown"))
+        else if(cmd == "3"){run_stats()}
+        else if(cmd == "4"){check_phrase  <- readline(prompt = "type phrase: ")
+            if(check_phrase %in% phrases){
+                print(paste("Phrase is in position", which(phrases==check_phrase)))
+            }
+            else{print("Phrase is not saved")}
+        }
+        else if(cmd == "5"){check_phrase  <- readline(prompt = "type phrase: ")
+            if(check_phrase %in% phrases){
+                score_vector <- score_matrix[phrases == check_phrase,]
+                print(rbind(phrases[score_vector > 1],score_vector[score_vector > 1]))
+            }
+            else{print("Phrase is not saved")}
+        }
+        else if(cmd == "6"){check_phrase  <- readline(prompt = "type phrase: ")
+            if(check_phrase %in% phrases){
+                score_vector <- score_matrix[,phrases == check_phrase]
+                print(rbind(phrases[score_vector > 1],score_vector[score_vector > 1]))
+            }
+            else{print("Phrase is not saved")}
+        }
+        else if(cmd == "7"){phrase_to_remove <<- readline(prompt = "type phrase: ")
+            if(phrase_to_remove %in% phrases){
+                remove_phrase(phrase_to_remove)
+                print(paste("Removed", phrase_to_remove))
+                output <<- ""
+            }
+            else{print("Phrase is not saved")}
+        }
+        else if(cmd == "8"){print(output)}
+        else(print("command unknown"))
     }
 }
 
