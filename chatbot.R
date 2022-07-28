@@ -87,7 +87,7 @@ jaccard <- function(a, b) {
 jaccard_select <- function(input){
     splitted_input <- unlist(strsplit(input," "))
     results <- sapply(strsplit(phrases," "), jaccard, splitted_input)
-    results[results == 1] <- 0
+    results[results == 1] <- 0 # TODO check if this works as intended
     return(sample(phrases[which(results == max(results))], 1))
 }
 
