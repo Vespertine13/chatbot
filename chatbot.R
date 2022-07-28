@@ -76,6 +76,20 @@ advance_select <- function(input){
     return(sample(sample_lst, 1))
 }
 
+# Jaccard similarity
+jaccard <- function(a, b) {
+    intersection = length(intersect(a, b))
+    union = length(a) + length(b) - intersection
+    return (intersection/union)
+}
+
+# selects the largest jaccard similarity that is not identical
+jaccard_select <- function(input){
+    splitted_input <- unlist(strsplit(input," "))
+    results <- sapply(strsplit(phrases," "), jaccard, splitted_input)
+    results[results == 1] <- 0
+    return(sample(phrases[which(results == max(results))], 1))
+}
 
 # command mode
 command_mode <- function(){
@@ -172,8 +186,8 @@ run_chatbot <- function(){
         # selects from all phrases over value 1
         else if(sum(score_matrix[phrases == input, ]>1)>0){output <<- advance_select(input)}
 
-        # selects from all phrases over value 0
-        else{output <<- select_from_all(input)}
+        # selects with Jaccard similarity
+        else{output <<- jaccard_select(input)}
         print(output)
     }
     print("Chatbot left")
@@ -183,3 +197,4 @@ run_chatbot <- function(){
 }
 
 #run_chatbot()
+
