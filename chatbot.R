@@ -84,12 +84,16 @@ jaccard <- function(a, b) {
 }
 
 # selects the largest jaccard similarity that is not identical
+# sometimes this one does not work TODO fix so it does not repat hrases
 jaccard_select <- function(input){
     splitted_input <- unlist(strsplit(input," "))
     results <- sapply(strsplit(phrases," "), jaccard, splitted_input)
-    results[results == 1] <- 0
+    results[results == 1] <- 0 # SEE TODO
     return(sample(phrases[which(results == max(results))], 1))
 }
+
+# TODO create logg of selection process
+
 
 # command mode
 command_mode <- function(){
@@ -108,6 +112,7 @@ command_mode <- function(){
             print("7: delete specific phrase")
             print("8: print current output")
             print("9: print 10 newest phrases")
+            print("10: print 10 last selection types")
         }
         else if(cmd == "2"){remove_phrase(output)
             print(paste("Removed", output))
@@ -144,10 +149,10 @@ command_mode <- function(){
         }
         else if(cmd == "8"){print(output)}
         else if(cmd == "9"){print(tail(phrases, 10))}
-        else(print("command unknown"))
+        else if(cmd == "10"){print(tail(selection_log))}
+        else{print("command unknown")}
     }
 }
-
 
 
 # chatbot function
@@ -155,6 +160,7 @@ run_chatbot <- function(){
     # load data 
     score_matrix <<- unname(as.matrix(read.csv("data/chatbot_matrix.csv")[-1]))
     phrases <<- as.character(unlist(read.csv("data/chatbot_phrases.csv")[-1]))
+    selection_log <<- c()
     # set start input and output values
     input <<- "none"
     output <<- "talk to me!"
@@ -176,21 +182,25 @@ run_chatbot <- function(){
 
         # adds a new random phrase, 1% chance
         if(sample(c(T, rep(F, 99)), 1)){
+            selection_log <<- c(selection_log, "random phrase")
             output <<- new_phrase()
             if(!(output %in% phrases)){add_new_input(output)}
         }
         
         # selects from all phrases over value 0, 1% chance
         else if(sample(c(T, rep(F, 99)), 1)){
+            selection_log <<- c(selection_log, "all over 0 phrases")
             output <<- select_from_all(input)}
 
         # selects from all phrases over value 1
         else if(sum(score_matrix[phrases == input, ]>1)>0){
+            selection_log <<- c(selection_log, "all over 1 phrases")
             output <<- advance_select(input)}
                 
 
         # selects with Jaccard similarity
-        else{output <<- jaccard_select(input)}
+        else{output <<- jaccard_select(input)
+          selection_log <<- c(selection_log, "Jaccard selection")}
                 
 
     print(output)
@@ -202,3 +212,4 @@ run_chatbot <- function(){
 }
 
 #run_chatbot()
+
