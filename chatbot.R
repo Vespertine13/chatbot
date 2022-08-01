@@ -84,11 +84,10 @@ jaccard <- function(a, b) {
 }
 
 # selects the largest jaccard similarity that is not identical
-# sometimes this one does not work TODO fix so it does not repat hrases
 jaccard_select <- function(input){
     splitted_input <- unlist(strsplit(input," "))
     results <- sapply(strsplit(phrases," "), jaccard, splitted_input)
-    results[results == 1] <- 0 # SEE TODO
+    results[results == max(results)] <- -1
     return(sample(phrases[which(results == max(results))], 1))
 }
 
@@ -212,4 +211,3 @@ run_chatbot <- function(){
 }
 
 #run_chatbot()
-
