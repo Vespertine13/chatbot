@@ -87,7 +87,7 @@ jaccard <- function(a, b) {
 jaccard_select <- function(input){
     splitted_input <- unlist(strsplit(input," "))
     results <- sapply(strsplit(phrases," "), jaccard, splitted_input)
-    results[results == 1] <- 0 # TODO check if this works as intended
+    results[results == 1] <- 0
     return(sample(phrases[which(results == max(results))], 1))
 }
 
@@ -179,16 +179,21 @@ run_chatbot <- function(){
             output <<- new_phrase()
             if(!(output %in% phrases)){add_new_input(output)}
         }
-
+        
         # selects from all phrases over value 0, 1% chance
-        else if(sample(c(T, rep(F, 99)), 1)){output <<- select_from_all(input)}
+        else if(sample(c(T, rep(F, 99)), 1)){
+            output <<- select_from_all(input)}
 
         # selects from all phrases over value 1
-        else if(sum(score_matrix[phrases == input, ]>1)>0){output <<- advance_select(input)}
+        else if(sum(score_matrix[phrases == input, ]>1)>0){
+            output <<- advance_select(input)}
+                
 
         # selects with Jaccard similarity
         else{output <<- jaccard_select(input)}
-        print(output)
+                
+
+    print(output)
     }
     print("Chatbot left")
     # save data
