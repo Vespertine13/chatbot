@@ -45,3 +45,4 @@ vignettes/*.pdf
 # data files
 data/chatbot_matrix.csv
 data/chatbot_phrases.csv
+*.csv
