@@ -42,7 +42,3 @@ vignettes/*.pdf
 *.R~
 *.R#
 
-# data files
-data/chatbot_matrix.csv
-data/chatbot_phrases.csv
-*.csv
