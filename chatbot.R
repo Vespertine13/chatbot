@@ -83,15 +83,22 @@ jaccard <- function(a, b) {
     return (intersection/union)
 }
 
-# selects the largest jaccard similarity that is not identical
+# selects the largest jaccard similarity that is not identical as input
 jaccard_select <- function(input){
     splitted_input <- unlist(strsplit(input," "))
     results <- sapply(strsplit(phrases," "), jaccard, splitted_input)
     results[results == max(results)] <- -1
-    return(sample(phrases[which(results == max(results))], 1))
+    jaccard_input <<- sample(phrases[which(results == max(results))], 1)
+    score <- score_matrix[phrases == jaccard_input, ]
+    if(sum(score>1)>0){
+        jaccard_output <<- advance_select(jaccard_input)
+        return(jaccard_output)
+    }
+    else{
+        return(jaccard_input)
+    }
 }
 
-# TODO create logg of selection process
 
 
 # command mode
@@ -211,4 +218,8 @@ run_chatbot <- function(){
 }
 
 #run_chatbot()
+
+
+
+
 
