@@ -1,4 +1,4 @@
-# reset
+# create basis data
 # phrases <<- c("talk to me!", "yes", "no")
 # score_matrix <<- matrix(1, 3, 3)
 
@@ -161,11 +161,12 @@ command_mode <- function(){
 }
 
 
+
 # chatbot function
 run_chatbot <- function(){
     # load data 
-    score_matrix <<- unname(as.matrix(read.csv("data/chatbot_matrix.csv")[-1]))
-    phrases <<- as.character(unlist(read.csv("data/chatbot_phrases.csv")[-1]))
+    score_matrix <<- unname(as.matrix(read.csv("~/mega/chatbot_data/chatbot_matrix.csv")[-1]))
+    phrases <<- as.character(unlist(read.csv("~/mega/chatbot_data/chatbot_phrases.csv")[-1]))
     selection_log <<- c()
     # set start input and output values
     input <<- "none"
@@ -213,8 +214,8 @@ run_chatbot <- function(){
     }
     print("Chatbot left")
     # save data
-    write.csv(score_matrix, "data/chatbot_matrix.csv")
-    write.csv(phrases, "data/chatbot_phrases.csv")
+    write.csv(score_matrix, "~/mega/chatbot_data/chatbot_matrix.csv")
+    write.csv(phrases, "~/mega/chatbot_data/chatbot_phrases.csv")
 }
 
 #run_chatbot()
