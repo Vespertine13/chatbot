@@ -212,10 +212,11 @@ run_chatbot <- function(){
 
     print(output)
     }
-    print("Chatbot left")
+    print("Saving data...")
     # save data
     write.csv(score_matrix, "~/mega/chatbot_data/chatbot_matrix.csv")
     write.csv(phrases, "~/mega/chatbot_data/chatbot_phrases.csv")
+    print("Chatbot left")
 }
 
 #run_chatbot()
