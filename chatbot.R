@@ -16,12 +16,6 @@ run_stats <- function(){
     print(ncol(score_matrix))
     print("Number of phrases:")
     print(length(phrases))
-    print("score_matrix table:")
-    print(table(as.vector(score_matrix)))
-    print("score_matrix size:")
-    print(object.size(score_matrix), units = "auto")
-    print("phrases size:")
-    print(object.size(phrases), units = "auto")
 }
 
 # plot score distribution
@@ -224,3 +218,4 @@ run_chatbot <- function(){
 }
 
 #run_chatbot()
+
