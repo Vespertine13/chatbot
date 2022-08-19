@@ -2,6 +2,10 @@
 # phrases <<- c("talk to me!", "yes", "no")
 # score_matrix <<- matrix(1, 3, 3)
 
+
+# get arrow for parquet data
+library(arrow)
+
 # test data
 run_stats <- function(){
     print("mean score:")
@@ -165,7 +169,7 @@ command_mode <- function(){
 # chatbot function
 run_chatbot <- function(){
     # load data 
-    score_matrix <<- unname(as.matrix(read.csv("~/mega/chatbot_data/chatbot_matrix.csv")[-1]))
+    score_matrix <<- unname(as.matrix(read_parquet("~/mega/chatbot_data/chatbot_matrix.parquet")))
     phrases <<- as.character(unlist(read.csv("~/mega/chatbot_data/chatbot_phrases.csv")[-1]))
     selection_log <<- c()
     # set start input and output values
@@ -214,7 +218,7 @@ run_chatbot <- function(){
     }
     print("Saving data...")
     # save data
-    write.csv(score_matrix, "~/mega/chatbot_data/chatbot_matrix.csv")
+    write_parquet(as.data.frame(score_matrix), "~/mega/chatbot_data/chatbot_matrix.parquet")
     write.csv(phrases, "~/mega/chatbot_data/chatbot_phrases.csv")
     print("Chatbot left")
 }
