@@ -221,10 +221,20 @@ run_chatbot <- function(){
 
 # remove by idx
 # library(tidyverse)
-
+# 
+# score_matrix <<- unname(as.matrix(read_parquet("~/mega/chatbot_data/chatbot_matrix.parquet")))
+# phrases <<- as.character(unlist(read.csv("~/mega/chatbot_data/chatbot_phrases.csv")[-1]))
+# 
+# idx<-grep("pattern", phrases)
+# phrases[idx]
+# 
+# 
 # phrases <- phrases[-idx]
 # score_matrix<-score_matrix[-idx,-idx]
-
+# 
+# phrases %>% length()
+# score_matrix %>% dim()
+# 
 # write_parquet(as.data.frame(score_matrix), "~/mega/chatbot_data/chatbot_matrix.parquet")
 # write.csv(phrases, "~/mega/chatbot_data/chatbot_phrases.csv")
 
