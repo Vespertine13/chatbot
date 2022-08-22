@@ -112,7 +112,7 @@ command_mode <- function(){
             print("3: get stats")
             print("4: check if phrase is saved")
             print("5: check likely output of input")
-            print("6: check input for likely output")
+            print("6: check possible input for output")
             print("7: delete specific phrase")
             print("8: print current output")
             print("9: print 10 newest phrases")
