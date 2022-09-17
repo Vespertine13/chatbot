@@ -6,6 +6,10 @@
 # get arrow for parquet data
 library(arrow)
 
+# set path
+setwd("../")
+path = getwd()
+
 # test data
 run_stats <- function(){
     print("mean score:")
@@ -163,8 +167,8 @@ command_mode <- function(){
 # chatbot function
 run_chatbot <- function(){
     # load data 
-    score_matrix <<- unname(as.matrix(read_parquet("~/mega/chatbot_data/chatbot_matrix.parquet")))
-    phrases <<- as.character(unlist(read.csv("~/mega/chatbot_data/chatbot_phrases.csv")[-1]))
+    score_matrix <<- unname(as.matrix(read_parquet(paste0(path, "/mega/chatbot_data/chatbot_matrix.parquet"))))
+    phrases <<- as.character(unlist(read.csv(paste0(path, "/mega/chatbot_data/chatbot_phrases.csv"))[-1]))
     selection_log <<- c()
     # set start input and output values
     input <<- "none"
@@ -212,8 +216,8 @@ run_chatbot <- function(){
     }
     print("Saving data...")
     # save data
-    write_parquet(as.data.frame(score_matrix), "~/mega/chatbot_data/chatbot_matrix.parquet")
-    write.csv(phrases, "~/mega/chatbot_data/chatbot_phrases.csv")
+    write_parquet(as.data.frame(score_matrix), paste0(path, "/mega/chatbot_data/chatbot_matrix.parquet"))
+    write.csv(phrases, paste0(path, "/mega/chatbot_data/chatbot_phrases.csv"))
     print("Chatbot left")
 }
 
