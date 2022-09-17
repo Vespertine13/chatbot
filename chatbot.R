@@ -241,3 +241,4 @@ run_chatbot <- function(){
 # 
 # write_parquet(as.data.frame(score_matrix), "~/mega/chatbot_data/chatbot_matrix.parquet")
 # write.csv(phrases, "~/mega/chatbot_data/chatbot_phrases.csv")
+
