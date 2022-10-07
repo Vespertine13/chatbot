@@ -94,7 +94,12 @@ jaccard_select <- function(input){
     score <- score_matrix[phrases == jaccard_input, ]
     if(sum(score>1)>0){
         jaccard_output <<- advance_select(jaccard_input)
-        return(jaccard_output)
+        if(jaccard_output == input){
+            return(jaccard_input)
+        }        
+        else{
+            return(jaccard_output)
+        }
     }
     else{
         return(jaccard_input)
@@ -241,4 +246,3 @@ run_chatbot <- function(){
 # 
 # write_parquet(as.data.frame(score_matrix), "~/mega/chatbot_data/chatbot_matrix.parquet")
 # write.csv(phrases, "~/mega/chatbot_data/chatbot_phrases.csv")
-
