@@ -1,2 +1,2 @@
-source("chatbot.R")
-run_chatbot()
+source("R/main.R")
+run_parla()
