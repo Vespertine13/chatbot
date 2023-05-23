@@ -234,15 +234,15 @@ run_parla <- function(){
                     output <<- jaccard_select(input)
                     current_selection <<- "Jaccard selection"            
                 }
-        
-        if(bot_repeats(output, output_log[length(output_log)])){
-            current_selection <<- "all over 0 phrases"
-            output <<- select_from_all(input)
-        }
         if(answers_q_with_q(input, output)){
             current_selection <<- "all over 0 phrases"
             output <<- select_from_all(input)
         }
+        if(bot_repeats(output, output_log[length(output_log)])){
+            current_selection <<- "all over 0 phrases"
+            output <<- select_from_all(input)
+        }
+
         
         selection_log <<- c(selection_log, current_selection)
         if(!(output %in% phrases)){add_new_input(output)}
