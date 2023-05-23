@@ -105,6 +105,23 @@ jaccard_select <- function(input){
     }
 }
 
+# check if the bot repeats itself
+bot_repeats <- function(output, last_output){
+    if(output == last_output){
+        return(TRUE)
+    }else{
+        return(FALSE)
+    }
+}
+
+# dont answer a question with a question
+answers_q_with_q <- function(input, output){
+    if(grepl("?", input, fixed = TRUE) & grepl("?", output, fixed = TRUE)){
+        return(TRUE)
+    }else{
+        return(FALSE)
+    }
+}
 
 
 # command mode
@@ -173,7 +190,8 @@ run_parla <- function(){
     # load data 
     score_matrix <<- unname(as.matrix(read_parquet(paste0(PATH, "chatbot_matrix.parquet"))))
     phrases <<- as.character(unlist(read.csv(paste0(PATH, "chatbot_phrases.csv"))[-1]))
-    selection_log <<- c()
+    selection_log <<- c("start_log")
+    output_log <<- c("start_log")
     # set start input and output values
     input <<- "none"
     output <<- "talk to me!"
@@ -195,28 +213,41 @@ run_parla <- function(){
 
         # adds a new random phrase, 1% chance
         if(sample(c(T, rep(F, 99)), 1)){
-            selection_log <<- c(selection_log, "random phrase")
+            current_selection <<- "random phrase"
             output <<- new_phrase()
-            if(!(output %in% phrases)){add_new_input(output)}
         }
         
         # selects from all phrases over value 0, 1% chance
         else if(sample(c(T, rep(F, 99)), 1)){
-            selection_log <<- c(selection_log, "all over 0 phrases")
-            output <<- select_from_all(input)}
+            current_selection <<-  "all over 0 phrases"
+            output <<- select_from_all(input)
+        }
 
         # selects from all phrases over value 1
         else if(sum(score_matrix[phrases == input, ]>1)>0){
-            selection_log <<- c(selection_log, "all over 1 phrases")
-            output <<- advance_select(input)}
-                
-
+                current_selection <<- "all over 1 phrases"
+                output <<- advance_select(input)
+        }
+        
         # selects with Jaccard similarity
-        else{output <<- jaccard_select(input)
-          selection_log <<- c(selection_log, "Jaccard selection")}
-                
-
-    print(output)
+        else{
+                    output <<- jaccard_select(input)
+                    current_selection <<- "Jaccard selection"            
+                }
+        
+        if(bot_repeats(output, output_log[length(output_log)])){
+            current_selection <<- "all over 0 phrases"
+            output <<- select_from_all(input)
+        }
+        if(answers_q_with_q(input, output)){
+            current_selection <<- "all over 0 phrases"
+            output <<- select_from_all(input)
+        }
+        
+        selection_log <<- c(selection_log, current_selection)
+        if(!(output %in% phrases)){add_new_input(output)}
+        print(output)
+        output_log <<- c(output_log, output)
     }
     print("Saving data...")
     # save data
