@@ -238,6 +238,13 @@ run_parla <- function(){
             current_selection <<- "all over 0 phrases"
             output <<- select_from_all(input)
         }
+        
+        # checks if bot repeats you
+        if(bot_repeats(output, input)){
+            current_selection <<- "all over 0 phrases"
+            output <<- select_from_all(input)
+        }
+        # checks if bot repeats herself
         if(bot_repeats(output, output_log[length(output_log)])){
             current_selection <<- "all over 0 phrases"
             output <<- select_from_all(input)
