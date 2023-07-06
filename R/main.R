@@ -1,13 +1,17 @@
-# create basis data
-# phrases <<- c("talk to me!", "yes", "no")
-# score_matrix <<- matrix(1, 3, 3)
-
-
 # get arrow for parquet data
 library(arrow)
 
-# set path
+# get config
 source("config.R")
+
+# check if file exists and create if not
+if(!file.exists(paste0(PATH, "chatbot_matrix.parquet")) | !file.exists(paste0(PATH, "chatbot_matrix.parquet"))){
+    phrases <<- c("talk to me!", "yes", "no")
+    score_matrix <<- matrix(1, 3, 3)
+    write.csv(phrases, paste0(PATH, "chatbot_phrases.csv"))
+    write_parquet(as.data.frame(score_matrix), paste0(PATH, "chatbot_matrix.parquet"))
+}
+
 
 # test data
 run_stats <- function(){
