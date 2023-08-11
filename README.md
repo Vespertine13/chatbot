@@ -1,3 +1,3 @@
 # chatbot
 A silly little chatbot. That is really bad at conversations.
-She tries to learn form what you tell her.
+She tries to learn from what you tell her.
