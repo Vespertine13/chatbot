@@ -1,6 +1,4 @@
-# get arrow for parquet data
-library(arrow)
-
+# remember the arrow package
 # get config
 source("config.R")
 
@@ -9,7 +7,7 @@ if(!file.exists(paste0(PATH, "chatbot_matrix.parquet")) | !file.exists(paste0(PA
     phrases <<- c("talk to me!", "yes", "no")
     score_matrix <<- matrix(1, 3, 3)
     write.csv(phrases, paste0(PATH, "chatbot_phrases.csv"))
-    write_parquet(as.data.frame(score_matrix), paste0(PATH, "chatbot_matrix.parquet"))
+    arrow::write_parquet(as.data.frame(score_matrix), paste0(PATH, "chatbot_matrix.parquet"))
 }
 
 
@@ -192,7 +190,7 @@ command_mode <- function(){
 # chatbot function
 run_parla <- function(){
     # load data 
-    score_matrix <<- unname(as.matrix(read_parquet(paste0(PATH, "chatbot_matrix.parquet"))))
+    score_matrix <<- unname(as.matrix(arrow::read_parquet(paste0(PATH, "chatbot_matrix.parquet"))))
     phrases <<- as.character(unlist(read.csv(paste0(PATH, "chatbot_phrases.csv"))[-1]))
     selection_log <<- c("start_log")
     output_log <<- c("start_log")
@@ -262,7 +260,7 @@ run_parla <- function(){
     }
     print("Saving data...")
     # save data
-    write_parquet(as.data.frame(score_matrix), paste0(PATH, "chatbot_matrix.parquet"))
+    arrow::write_parquet(as.data.frame(score_matrix), paste0(PATH, "chatbot_matrix.parquet"))
     write.csv(phrases, paste0(PATH, "chatbot_phrases.csv"))
     print("Chatbot left")
 }
