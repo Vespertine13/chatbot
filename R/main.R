@@ -1,6 +1,7 @@
 # remember the arrow package
 # get config
-source("config.R")
+PATH <- paste0(PATH_BASE, "/mega/data/parla/")
+source(paste0(PATH_BASE, "/parla/config.R"))
 
 # check if file exists and create if not
 if(!file.exists(paste0(PATH, "chatbot_matrix.parquet")) | !file.exists(paste0(PATH, "chatbot_matrix.parquet"))){
@@ -188,7 +189,7 @@ command_mode <- function(){
 
 
 # chatbot function
-run_parla <- function(){
+run_training <- function(){
     # load data 
     score_matrix <<- unname(as.matrix(arrow::read_parquet(paste0(PATH, "chatbot_matrix.parquet"))))
     phrases <<- as.character(unlist(read.csv(paste0(PATH, "chatbot_phrases.csv"))[-1]))
@@ -265,3 +266,33 @@ run_parla <- function(){
     print("Chatbot left")
 }
 
+# run parla for use with elisp function 
+# it is similar to run_training()
+run_parla <- function(input){
+    input <- tolower(input)
+    score_matrix <<- unname(as.matrix(arrow::read_parquet(paste0(PATH, "chatbot_matrix.parquet"))))
+    phrases <<- as.character(unlist(read.csv(paste0(PATH, "chatbot_phrases.csv"))[-1]))
+    if(!(input %in% phrases)){add_new_input(input)}
+
+    if(sample(c(T, rep(F, 99)), 1)){
+        output <- new_phrase()
+    }
+    else if(sample(c(T, rep(F, 99)), 1)){
+        output <- select_from_all(input)
+    }
+    else if(sum(score_matrix[phrases == input, ]>1)>0){
+        output <- advance_select(input)
+    }
+    else{
+        output <- jaccard_select(input)
+    }
+    if(answers_q_with_q(input, output)){ #check is bot answers a question with a question (should be rare but not impossible)
+        output <- select_from_all(input)
+    }
+    if(bot_repeats(output, input)){ #check is bot repeats what you said (should be rare but not impossible)
+        output <- select_from_all(input)
+    }
+    arrow::write_parquet(as.data.frame(score_matrix), paste0(PATH, "chatbot_matrix.parquet"))
+    write.csv(phrases, paste0(PATH, "chatbot_phrases.csv"))
+    return(output)
+}
