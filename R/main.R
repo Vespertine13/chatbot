@@ -270,9 +270,13 @@ run_training <- function(){
 # it is similar to run_training()
 run_parla <- function(input){
     input <- tolower(input)
+    output <<- readLines(paste0(PATH, "output.txt"))
+    if (length(output) == 0){output <- ""}
+    output_last <- output
     score_matrix <<- unname(as.matrix(arrow::read_parquet(paste0(PATH, "chatbot_matrix.parquet"))))
     phrases <<- as.character(unlist(read.csv(paste0(PATH, "chatbot_phrases.csv"))[-1]))
     if(!(input %in% phrases)){add_new_input(input)}
+    give_feedback(input, output)
 
     if(sample(c(T, rep(F, 99)), 1)){
         output <- new_phrase()
@@ -289,10 +293,14 @@ run_parla <- function(input){
     if(answers_q_with_q(input, output)){ #check is bot answers a question with a question (should be rare but not impossible)
         output <- select_from_all(input)
     }
+    if(bot_repeats(output, output_last)){
+        output <- select_from_all(input)
+        }
     if(bot_repeats(output, input)){ #check is bot repeats what you said (should be rare but not impossible)
         output <- select_from_all(input)
     }
     arrow::write_parquet(as.data.frame(score_matrix), paste0(PATH, "chatbot_matrix.parquet"))
     write.csv(phrases, paste0(PATH, "chatbot_phrases.csv"))
+    writeLines(output,con=paste0(PATH, "output.txt"))
     return(output)
 }
