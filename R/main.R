@@ -7,8 +7,10 @@ source(paste0(PATH_BASE, "/parla/config.R"))
 if(!file.exists(paste0(PATH, "chatbot_matrix.parquet")) | !file.exists(paste0(PATH, "chatbot_matrix.parquet"))){
     phrases <<- c("talk to me!", "yes", "no")
     score_matrix <<- matrix(1, 3, 3)
+    topic_score_matrix <<- matrix(0, 3, 3)
     write.csv(phrases, paste0(PATH, "chatbot_phrases.csv"))
     arrow::write_parquet(as.data.frame(score_matrix), paste0(PATH, "chatbot_matrix.parquet"))
+    arrow::write_parquet(as.data.frame(topic_score_matrix), paste0(PATH, "chatbot_topic_matrix.parquet"))
 }
 
 
@@ -35,6 +37,8 @@ plot_score_matrix <- function(){
 add_new_input <- function(char){
     score_matrix <<- rbind(score_matrix, 1)
     score_matrix <<- cbind(score_matrix, 1)
+    topic_score_matrix <<- rbind(topic_score_matrix, 0)
+    topic_score_matrix <<- cbind(topic_score_matrix, 0)
     phrases <<- c(phrases, char)}
 
 # delete phrase
@@ -48,6 +52,7 @@ remove_phrase <- function(char){
 give_feedback <- function(input, output){
     # add +1 to the response written by the user
     score_matrix[phrases == output, phrases == input] <<- score_matrix[phrases == output, phrases == input] + 1
+    topic_score_matrix[phrases == input_last, phrases == input] <<- topic_score_matrix[phrases == input_last, phrases == input] + 1
 }
 
 # creates a new phrase
@@ -61,6 +66,8 @@ new_phrase <- function(){
 # select from all over 0
 select_from_all <- function(input){   
     score <- score_matrix[phrases == input, ]
+    topic_score <- topic_score_matrix[phrases == output_last, ]
+    score <- score + topic_score
     score[score<0] <- 0
     sample_lst <- c()
     for(i in 1:length(score)){
@@ -72,6 +79,8 @@ select_from_all <- function(input){
 # select from all over 1
 advance_select <- function(input){
     score <- score_matrix[phrases == input, ]
+    topic_score <- topic_score_matrix[phrases == output_last, ]
+    score <- score + topic_score
     score[score<2] <- 0
     sample_lst <- c()
     for(i in 1:length(score)){
@@ -192,16 +201,22 @@ command_mode <- function(){
 run_training <- function(){
     # load data 
     score_matrix <<- unname(as.matrix(arrow::read_parquet(paste0(PATH, "chatbot_matrix.parquet"))))
+    topic_score_matrix <<- unname(as.matrix(arrow::read_parquet(paste0(PATH, "chatbot_topic_matrix.parquet"))))
     phrases <<- as.character(unlist(read.csv(paste0(PATH, "chatbot_phrases.csv"))[-1]))
     selection_log <<- c("start_log")
     output_log <<- c("start_log")
     # set start input and output values
-    input <<- "none"
-    output <<- "talk to me!"
+    output <<- readLines(paste0(PATH, "output.txt"))
+    input <<- readLines(paste0(PATH, "input.txt"))
+    if (length(output) == 0){output <- ""}
+    if (length(input) == 0){input <- ""}
     print(output)
     while(!grepl("bye", input)){
+        input_last <<- input
+        output_last <<- output
         input <<- readline(prompt = "Write something: ")
         input <<- tolower(input)
+        
 
         # command mode
         if(input == "command mode"){
@@ -234,9 +249,9 @@ run_training <- function(){
         
         # selects with Jaccard similarity
         else{
-                    output <<- jaccard_select(input)
-                    current_selection <<- "Jaccard selection"            
-                }
+            output <<- jaccard_select(input)
+            current_selection <<- "Jaccard selection"            
+        }
         if(answers_q_with_q(input, output)){
             current_selection <<- "all over 0 phrases"
             output <<- select_from_all(input)
@@ -271,7 +286,9 @@ run_training <- function(){
 run_parla <- function(input){
     input <- tolower(input)
     output <<- readLines(paste0(PATH, "output.txt"))
+    input_last <<- readLines(paste0(PATH, "input.txt"))
     if (length(output) == 0){output <- ""}
+    if (length(input_last) == 0){input_last <- ""}
     output_last <- output
     score_matrix <<- unname(as.matrix(arrow::read_parquet(paste0(PATH, "chatbot_matrix.parquet"))))
     phrases <<- as.character(unlist(read.csv(paste0(PATH, "chatbot_phrases.csv"))[-1]))
@@ -300,7 +317,9 @@ run_parla <- function(input){
         output <- select_from_all(input)
     }
     arrow::write_parquet(as.data.frame(score_matrix), paste0(PATH, "chatbot_matrix.parquet"))
+    arrow::write_parquet(as.data.frame(topic_score_matrix), paste0(PATH, "chatbot_topic_matrix.parquet"))
     write.csv(phrases, paste0(PATH, "chatbot_phrases.csv"))
     writeLines(output,con=paste0(PATH, "output.txt"))
+    writeLines(input,con=paste0(PATH, "input.txt"))
     return(output)
 }
