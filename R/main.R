@@ -52,6 +52,7 @@ add_new_input <- function(char){
 remove_phrase <- function(char){
     idx <- which(phrases==char)
     score_matrix <<- score_matrix[-idx, -idx]
+    topic_score_matrix <<- topic_score_matrix[-idx, -idx]
     phrases <<- phrases[-idx]
 }
 
