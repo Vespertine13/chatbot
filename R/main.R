@@ -214,9 +214,8 @@ run_training <- function(){
     output_log <<- c("start_log")
     # set start input and output values
     output <<- "talk to me!"
-    input <<- readLines(paste0(PATH, "input.txt"))
+    input <<- ""
     if (length(output) == 0){output <- ""}
-    if (length(input) == 0){input <- ""}
     print(output)
     while(!grepl("bye", input)){
         input_last <<- input
