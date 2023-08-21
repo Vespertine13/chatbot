@@ -285,8 +285,8 @@ run_training <- function(){
     }
     print("Saving data...")
     # save data
-    arrow::write_parquet(as.data.frame(score_matrix), paste0(PATH, "chatbot_matrix.parquet"))
-    arrow::write_parquet(as.data.frame(topic_score_matrix), paste0(PATH, "chatbot_topic_matrix.parquet"))
+    arrow::write_parquet(as.data.frame(score_matrix), paste0(PATH, "chatbot_matrix.parquet"), compression = compression_option)
+    arrow::write_parquet(as.data.frame(topic_score_matrix), paste0(PATH, "chatbot_topic_matrix.parquet"), compression = compression_option)
     write.csv(phrases, paste0(PATH, "chatbot_phrases.csv"))
     print("Chatbot left")
 }
@@ -336,8 +336,8 @@ run_parla <- function(input){
         output <- select_from_all(score)
     }
     # save updated data
-    arrow::write_parquet(as.data.frame(score_matrix), paste0(PATH, "chatbot_matrix.parquet"))
-    arrow::write_parquet(as.data.frame(topic_score_matrix), paste0(PATH, "chatbot_topic_matrix.parquet"))
+    arrow::write_parquet(as.data.frame(score_matrix), paste0(PATH, "chatbot_matrix.parquet"), compression = compression_option)
+    arrow::write_parquet(as.data.frame(topic_score_matrix), paste0(PATH, "chatbot_topic_matrix.parquet"), compression = compression_option)
     write.csv(phrases, paste0(PATH, "chatbot_phrases.csv"))
     writeLines(output,con=paste0(PATH, "output.txt"))
     writeLines(input,con=paste0(PATH, "input.txt"))
