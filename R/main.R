@@ -67,7 +67,7 @@ calculate_score <- function(input, output_last){
 give_feedback <- function(input, output, input_last){
     # add +1 to the response written by the user
     score_matrix[phrases == output, phrases == input] <<- score_matrix[phrases == output, phrases == input] + 1
-    topic_score_matrix[phrases == input_last, phrases == input] <<- topic_score_matrix[phrases == input_last, phrases == input] + 1
+    topic_score_matrix[phrases == input, phrases == input_last] <<- topic_score_matrix[phrases == input, phrases == input_last] + 1 
 }
 
 # creates a new phrase
