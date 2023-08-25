@@ -66,7 +66,7 @@ calculate_score <- function(input, output_last){
 # give feedback
 give_feedback <- function(input, output, input_last){
     # add +1 to the response written by the user
-    score_matrix[phrases == output, phrases == input] <<- score_matrix[phrases == output, phrases == input] + 1
+    score_matrix[phrases == output, phrases == input] <<- score_matrix[phrases == output, phrases == input] + 2
     topic_score_matrix[phrases == input_last, phrases == input] <<- topic_score_matrix[phrases == input_last, phrases == input] + 1
 }
 
@@ -87,9 +87,9 @@ select_from_all <- function(score){
     return(sample(sample_lst, 1))
 }
 
-# select from all over 1
+# select from all over 2
 advance_select <- function(score){
-    score[score<2] <- 0
+    score[score<3] <- 0
     sample_lst <- c()
     for(i in 1:length(score)){
         sample_lst <- c(sample_lst, rep(phrases[i],score[i]))
@@ -105,13 +105,15 @@ jaccard <- function(a, b) {
 }
 
 # selects the largest jaccard similarity that is not identical as input
+# either as placeholder to find a similar input as a score calculator see advance_select()
+# or as an output in itself tend to almost repeat quite often.
 jaccard_select <- function(input){
     splitted_input <- unlist(strsplit(input," "))
     results <- sapply(strsplit(phrases," "), jaccard, splitted_input)
     results[results == max(results)] <- -1
     jaccard_input <<- sample(phrases[which(results == max(results))], 1)
     score_jac <- score_matrix[phrases == jaccard_input, ]
-    if(sum(score_jac>1)>0){
+    if(sum(score_jac>2)>0){
         jaccard_output <<- advance_select(score_jac)
         if(jaccard_output == input){
             return(jaccard_input)
@@ -222,8 +224,7 @@ run_training <- function(){
         input_last <<- input
         output_last <<- output
         input <<- readline(prompt = "Write something: ")
-        input <<- tolower(input)
-        
+        input <<- tolower(input)        
 
         # command mode
         if(input == "command mode"){
@@ -251,8 +252,8 @@ run_training <- function(){
         }
 
         # selects from all phrases over value 1
-        else if(sum(score>1)>0){
-                current_selection <<- "all over 1 phrases"
+        else if(sum(score>2)>0){
+                current_selection <<- "all over 2 phrases"
                 output <<- advance_select(score)
         }
         
@@ -320,7 +321,7 @@ run_parla <- function(input){
     else if(sample(c(T, rep(F, 99)), 1)){
         output <- select_from_all(score)
     }
-    else if(sum(score>1)>0){
+    else if(sum(score>2)>0){
         output <- advance_select(score)
     }
     else{
